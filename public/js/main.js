@@ -7,7 +7,8 @@ $(() => {
   var $window = $(window);
 
   // device orientation test
-  $window.on("orientationchange", function(event) {
+  // doesn't seem to work with jQuery
+  window.addEventListener("deviceorientation", function(event) {
     document.write(JSON.stringify(event), event.alpha + " " + event.beta + " " + event.gamma);
   });
 
