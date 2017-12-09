@@ -9,7 +9,7 @@ $(() => {
   // device orientation test
   // doesn't seem to work with jQuery
   window.addEventListener("deviceorientation", function(event) {
-    document.write(JSON.stringify(event), event.alpha + " " + event.beta + " " + event.gamma);
+    $("h1").text(JSON.stringify(event), event.alpha + " " + event.beta + " " + event.gamma);
   });
 
 });
