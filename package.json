@@ -1,0 +1,15 @@
+{
+  "name": "multi-racer",
+  "version": "0.0.1",
+  "description": "A multi-person racing game using smartphone controllers",
+  "author": "Jonathan Lam <jlam55555@gmail.com",
+  "dependencies": {
+    "socket.io": "2.0.4",
+    "express": "4.16.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.heroku.com/multi-racer"
+  },
+  "license": "MIT"
+}
