@@ -14,9 +14,9 @@ $(() => {
   // doesn't seem to work with jQuery
   window.addEventListener("deviceorientation", function(event) {
     var turn = event.beta; // turning the device sideways
-    var pedal = event.gamma - 90; // tilting the device forwards/backwards
+    var pedal = 90 - event.gamma; // tilting the device forwards/backwards
                                   // straight up is no movement
-    $("h1").text(turn + " " + pedal);
+    $("h1").text(Math.floor(turn) + " " + Math.floor(pedal));
   });
 
 });
