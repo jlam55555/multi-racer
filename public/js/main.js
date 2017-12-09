@@ -7,8 +7,8 @@ $(() => {
   var $window = $(window);
 
   // device orientation test
-  $window.on("deviceorientation", (event) => {
-    document.write(event.alpha + " " + event.beta + " " + event.gamma);
+  $window.on("orientationchange", function(event) {
+    document.write(JSON.stringify(event), event.alpha + " " + event.beta + " " + event.gamma);
   });
 
 });
