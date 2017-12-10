@@ -84,7 +84,7 @@ $(() => {
     requestAnimationFrame(animate);
     pivot.rotation.y -= 0.001 * (turn || 0);
     for(wheel of wheels) {
-      wheel.rotation.z -= 0.01 * (pedal || 0);
+      wheel.rotation.z += 0.01 * (pedal || 0);
     }
     renderer.render(scene, camera);
   }
