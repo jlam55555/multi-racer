@@ -11,15 +11,6 @@ $(() => {
   var turn;    // positive indicates turn right, negative indicates turn left
   var pedal;   // positive indicates go forward, negative indicates go backward
 
-  // device orientation test
-  // doesn't seem to work with jQuery
-  window.addEventListener("deviceorientation", function(event) {
-    var turn = Math.floor((event.gamma > 0 ? -1 : 1) * event.beta); // turning the device sideways
-    var pedal = Math.floor(45 - Math.abs(event.gamma));             // tilting the device forwards/backwards
-                                                                    // straight up is no movement
-    $("h1").text(Math.floor(turn) + " " + Math.floor(pedal));
-  });
-
   // create renderer
   var scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -58,6 +49,12 @@ $(() => {
   var carMaterial = new THREE.MeshLambertMaterial({color: 0x0000ff});
   var carMesh = new THREE.Mesh(carGeometry, carMaterial);
   scene.add(carMesh);
+  var underCarGeometry = new THREE.BoxGeometry(7, 1, 3);
+  var underCarMesh = new THREE.Mesh(underCarGeometry, carMaterial);
+  underCarMesh.position.y = 0.5;
+  underCarMesh.position.z = 2.5;
+  underCarMesh.position.x = -2.5;
+  carMesh.add(underCarMesh);
 
   var wheelShape = new THREE.Shape();
   wheelShape.arc(0, 0, 0.8, 0, Math.PI*2);
@@ -80,17 +77,26 @@ $(() => {
   }
   var pivot = new THREE.Object3D();
   pivot.add(carMesh);
-  carMesh.applyMatrix( new THREE.Matrix4().makeTranslation(2.5, 0, -2.5));
+  carMesh.applyMatrix(new THREE.Matrix4().makeTranslation(2.5, 0, -2.5));
   scene.add(pivot);
 
   function animate() {
     requestAnimationFrame(animate);
-    pivot.rotation.y += 0.01;
+    pivot.rotation.y += 0.001 * (turn || 0);
     for(wheel of wheels) {
-      wheel.rotation.z += 1;
+      wheel.rotation.z += 0.01 * (pedal || 0);
     }
     renderer.render(scene, camera);
   }
   animate();
+
+  // device orientation test
+  // doesn't seem to work with jQuery
+  window.addEventListener("deviceorientation", function(event) {
+    turn = Math.floor((event.gamma > 0 ? -1 : 1) * event.beta); // turning the device sideways
+    pedal = Math.floor(45 - Math.abs(event.gamma));             // tilting the device forwards/backwards
+                                                                    // straight up is no movement
+    $("h1").text(Math.floor(turn) + " " + Math.floor(pedal));
+  });
 
 });
