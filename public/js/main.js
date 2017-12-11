@@ -89,7 +89,7 @@ $(() => {
 
   function animate() {
     requestAnimationFrame(animate);
-    pivot.rotation.y -= 0.001 * (turn === undefined ? 10 : turn);
+    pivot.rotation.y -= 0.0001 * (turn === undefined ? 10 : turn) * (pedal === undefined ? 10 : pedal);
     for(wheel of wheels) {
       wheel.rotation.z += 0.01 * (pedal === undefined ? 10 : pedal);
       pivot.translateX(-0.005 * (pedal === undefined ? 10 : pedal));
