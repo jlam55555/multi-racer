@@ -89,10 +89,10 @@ $(() => {
 
   function animate() {
     requestAnimationFrame(animate);
-    pivot.rotation.y -= 0.001 * (turn || 10);
+    pivot.rotation.y -= 0.001 * (turn === undefined ? 10 : turn);
     for(wheel of wheels) {
-      wheel.rotation.z += 0.01 * (pedal || 10);
-      pivot.translateX(-0.001 * (pedal || 10));
+      wheel.rotation.z += 0.01 * (pedal === undefined ? 10 : pedal);
+      pivot.translateX(-0.005 * (pedal === undefined ? 10 : pedal));
     }
     renderer.render(scene, camera);
   }
