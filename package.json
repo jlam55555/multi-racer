@@ -5,7 +5,8 @@
   "author": "Jonathan Lam <jlam55555@gmail.com",
   "dependencies": {
     "socket.io": "2.0.4",
-    "express": "4.16.0"
+    "express": "4.16.0",
+    "pixel-getter": "0.0.5"
   },
   "repository": {
     "type": "git",

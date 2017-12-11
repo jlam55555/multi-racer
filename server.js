@@ -12,6 +12,16 @@ app.use(express.static("public"));
 http.listen(process.env.PORT || 5000);
 
 /******************************************************************************
+ ██████  ████████ ██   ██ ███████ ██████      ██████  ███████ ██████  ███████
+██    ██    ██    ██   ██ ██      ██   ██     ██   ██ ██      ██   ██ ██
+██    ██    ██    ███████ █████   ██████      ██   ██ █████   ██████  ███████
+██    ██    ██    ██   ██ ██      ██   ██     ██   ██ ██      ██           ██
+ ██████     ██    ██   ██ ███████ ██   ██     ██████  ███████ ██      ███████
+******************************************************************************/
+// use this for interpreting map data
+var pixelGetter = require("pixel-getter");
+
+/******************************************************************************
 ███████  ██████   ██████ ██   ██ ███████ ████████ ██  ██████
 ██      ██    ██ ██      ██  ██  ██         ██    ██ ██    ██
 ███████ ██    ██ ██      █████   █████      ██    ██ ██    ██
@@ -21,4 +31,15 @@ http.listen(process.env.PORT || 5000);
 var io = require("socket.io")(http);
 io.on("connection", function(socket) {
   console.log("a user has connected");
+
+  // return map pixel data
+  socket.on("getMap", function(fn) {
+    pixelGetter.get("./maps/map.png", function(error, pixels) {
+      if(error) {
+        console.log("Error retrieving map image data: " + error);
+        return;
+      }
+      fn(pixels);
+    });
+  })
 });

@@ -16,15 +16,21 @@ $(() => {
   var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
   var target = new THREE.Object3D();
   //camera.rotation.x = -Math.PI/2;
-  //camera.position.y = 15;
-  camera.position.z = 10;
+  //camera.position.y = 50;
+  camera.rotation.y = Math.PI/2;
+  camera.position.y = 5;
+  camera.position.x = 15;
+  camera.position.z = 2.5;
   var renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight, false);
   $body.prepend(renderer.domElement);
 
   var spotLight = new THREE.SpotLight(0xffffff);
-  spotLight.position.set(0, 0, 10);
+  spotLight.position.set(0, 50, 0);
   scene.add(spotLight);
+
+  var ambientLight = new THREE.AmbientLight(0x444444);
+  scene.add(ambientLight);
 
   var carShape = new THREE.Shape();
   carShape.moveTo(1, 0);
@@ -48,6 +54,7 @@ $(() => {
   });
   var carMaterial = new THREE.MeshLambertMaterial({color: 0x0000ff});
   var carMesh = new THREE.Mesh(carGeometry, carMaterial);
+  carMesh.add(camera);
   scene.add(carMesh);
   var underCarGeometry = new THREE.BoxGeometry(7, 1, 3);
   var underCarMesh = new THREE.Mesh(underCarGeometry, carMaterial);
@@ -82,9 +89,10 @@ $(() => {
 
   function animate() {
     requestAnimationFrame(animate);
-    pivot.rotation.y -= 0.001 * (turn || 0);
+    pivot.rotation.y -= 0.001 * (turn || 10);
     for(wheel of wheels) {
-      wheel.rotation.z += 0.01 * (pedal || 0);
+      wheel.rotation.z += 0.01 * (pedal || 10);
+      pivot.translateX(-0.001 * (pedal || 10));
     }
     renderer.render(scene, camera);
   }
@@ -97,6 +105,22 @@ $(() => {
     pedal = Math.floor(45 - Math.abs(event.gamma));             // tilting the device forwards/backwards
                                                                     // straight up is no movement
     $("h1").text(Math.floor(turn) + " " + Math.floor(pedal));
+  });
+
+  socket.emit("getMap", function(mapData) {
+    var elevations = mapData[0].map(e => e.r);
+    var planeGeometry = new THREE.PlaneGeometry(50, 50, 9, 9);
+    for(var i = 0; i < elevations.length; i++) {
+      planeGeometry.vertices[i].z = elevations[i] / 255 * 5;
+    }
+    var planeMaterial = new THREE.MeshLambertMaterial({
+      color: 0xffffff,
+      wireframe: true
+    });
+    var planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+    planeMesh.rotation.x = -Math.PI/2;
+    planeMesh.position.y = -4;
+    scene.add(planeMesh);
   });
 
 });
