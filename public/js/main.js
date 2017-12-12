@@ -96,7 +96,7 @@ $(() => {
     requestAnimationFrame(animate);
 
     // set turn, pedal for dev purposes
-    if(false) {
+    if(false || turn === undefined || pedal === undefined) {
       turn = 10;
       pedal = 10;
     }
