@@ -34,12 +34,15 @@ var cars = [];
 io.on("connection", function(socket) {
   console.log("a user has connected");
   sockets.push(socket);
-  var socketId = sockets.length-1;
+  socket.socketId = sockets.length-1;
 
   // disconnect
   socket.on("disconnect", () => {
-    sockets.splice(socketId, 1);
+    sockets.splice(socket.socketId, 1);
     // TODO: delete paired socket reference if necessary
+    for(var i = 0; i < sockets.length; i++) {
+      sockets[i].socketId--;
+    }
   });
 
   // return map pixel data
@@ -67,6 +70,9 @@ io.on("connection", function(socket) {
 
   // verify code
   socket.on("verifyCode", (code, fn) => {
+
+    //console.log(Object.keys(sockets));
+    //sockets.filter(s => console.log(s.code, code, s.code === code && s.host));
 
     // only match sockets that are hosts and that have a matching code
     var matchingCodeHosts = sockets.filter(s => s.code === code && s.host);
@@ -130,7 +136,7 @@ setInterval(() => {
 
     var car = cars[i];
     car.direction += 0.0001 * car.turn * car.pedal;
-    console.log(car.direction);
+    //console.log(car.direction);
 
     // for dev purposes
     //car.turn = 10;
