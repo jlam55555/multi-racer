@@ -111,8 +111,9 @@ io.on("connection", function(socket) {
   // device orientation update
   socket.on("deviceorientation", function(turn, pedal) {
     if(socket.host === false && (socket.socketPair && socket.socketPair.code === socket.code)) {
-      socket.car.turn = turn;
-      socket.car.pedal = pedal;
+      socket.host.car.turn = turn;
+      socket.host.car.pedal = pedal;
+      //console.log(turn, pedal);
     }
   });
 
@@ -129,6 +130,7 @@ setInterval(() => {
 
     var car = cars[i];
     car.direction += 0.0001 * car.turn * car.pedal;
+    console.log(car.direction);
 
     // for dev purposes
     //car.turn = 10;

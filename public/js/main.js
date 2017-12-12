@@ -120,12 +120,15 @@ $(() => {
                                                                 // TODO: allow portrait mode
 
     // show interpreted turn, pedal results
-    //$("h1").text(Math.floor(turn) + " " + Math.floor(pedal));
+    $("h1").text(Math.floor(turn) + " " + Math.floor(pedal));
     socket.emit("deviceorientation", Math.floor((event.gamma > 0 ? -1 : 1) * event.beta), Math.floor(45 - Math.abs(event.gamma)));
   });
+  //setInterval(() => {
+  //  socket.emit("deviceorientation", 10, 10);
+  //}, 10);
   socket.on("mapUpdate", (carInfo) => {
     car.pivot.position.set(carInfo.x, carInfo.y, carInfo.z);
-    car.pivot.x = carInfo.x;
+    car.pivot.x = carInfo.x; // TODO: remove this
     car.pivot.z = carInfo.z;
     car.pivot.rotation.y = carInfo.direction;
   });
