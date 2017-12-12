@@ -111,8 +111,8 @@ io.on("connection", function(socket) {
   // device orientation update
   socket.on("deviceorientation", function(turn, pedal) {
     if(socket.host === false && (socket.socketPair && socket.socketPair.code === socket.code)) {
-      socket.host.car.turn = turn;
-      socket.host.car.pedal = pedal;
+      socket.socketPair.car.turn = turn;
+      socket.socketPair.car.pedal = pedal;
       //console.log(turn, pedal);
     }
   });
