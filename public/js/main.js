@@ -94,11 +94,13 @@ $(() => {
 
   function animate() {
     requestAnimationFrame(animate);
-    // set turn, pedal if missing
-    if(true) {
+
+    // set turn, pedal for dev purposes
+    if(false) {
       turn = 10;
       pedal = 10;
     }
+
     car.pivot.rotation.y -= 0.0001 * turn * pedal;
     for(wheel of car.wheels) {
       wheel.rotation.z += 0.01 * pedal;
@@ -116,6 +118,8 @@ $(() => {
                                                                 // 45 degree tilt is no movement
                                                                 // TODO: allow tilt calibration to user
                                                                 // TODO: allow portrait mode
+
+    // show interpreted turn, pedal results
     //$("h1").text(Math.floor(turn) + " " + Math.floor(pedal));
   });
 
