@@ -135,7 +135,7 @@ setInterval(() => {
   for(var i = 0; i < cars.length; i++) {
 
     var car = cars[i];
-    car.direction += 0.0001 * car.turn * car.pedal;
+    car.direction -= 0.0001 * car.turn * car.pedal;
     //console.log(car.direction);
 
     // for dev purposes
@@ -146,7 +146,7 @@ setInterval(() => {
       wheel.rotation.z += 0.01 * pedal;
     }*/
     //car.pivot.translateX(-0.02 * pedal);
-    var distance = 0.1 * car.pedal;
+    var distance = 0.05 * car.pedal;
     car.x -= Math.cos(car.direction) * distance;
     car.z += Math.sin(car.direction) * distance;
   }
