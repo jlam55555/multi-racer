@@ -30,6 +30,7 @@ var pixelGetter = require("pixel-getter");
 ******************************************************************************/
 var io = require("socket.io")(http);
 var sockets = [];
+var cars = [];
 io.on("connection", function(socket) {
   console.log("a user has connected");
   sockets.push(socket);
@@ -87,8 +88,58 @@ io.on("connection", function(socket) {
     socket.code = code;
     socket.host = false;
     socket.socketPair = host;
-    host.socketPair = socket;
+    //host.socketPair = socket;
+    var carInfo = {
+      code: code,
+      /*host: host,
+      client: socket,*/
+      x: Math.random()*20 - 10,
+      y: 0,
+      z: Math.random()*20 - 10,
+      turn: 0,
+      pedal: 0,
+      direction: Math.random() * 2 * Math.PI
+    };
+    cars.push(carInfo);
+    host.car = carInfo;
+    // TODO: delete carInfo on socket exit
     host.emit("codeVerified");
+    host.emit("mapUpdate", carInfo);
     fn();
   });
+
+  // device orientation update
+  socket.on("deviceorientation", function(turn, pedal) {
+    if(socket.host === false && (socket.socketPair && socket.socketPair.code === socket.code)) {
+      socket.car.turn = turn;
+      socket.car.pedal = pedal;
+    }
+  });
+
+  // emit location every so often if host
+  setInterval(function() {
+    if(socket.car !== undefined && socket.host === true) { // TODO: change .host to .isHost
+      socket.emit("mapUpdate", socket.car);
+    }
+  }, 10);
 });
+
+setInterval(() => {
+  for(var i = 0; i < cars.length; i++) {
+
+    var car = cars[i];
+    car.direction += 0.0001 * car.turn * car.pedal;
+
+    // for dev purposes
+    //car.turn = 10;
+    //car.pedal = 10;
+
+    /*for(wheel of car.wheels) {
+      wheel.rotation.z += 0.01 * pedal;
+    }*/
+    //car.pivot.translateX(-0.02 * pedal);
+    var distance = 0.1 * car.pedal;
+    car.x -= Math.cos(car.direction) * distance;
+    car.z += Math.sin(car.direction) * distance;
+  }
+}, 10);

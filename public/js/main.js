@@ -96,7 +96,7 @@ $(() => {
     requestAnimationFrame(animate);
 
     // set turn, pedal for dev purposes
-    if(false || turn === undefined || pedal === undefined) {
+    /*if(false || turn === undefined || pedal === undefined) {
       turn = 10;
       pedal = 10;
     }
@@ -105,7 +105,7 @@ $(() => {
     for(wheel of car.wheels) {
       wheel.rotation.z += 0.01 * pedal;
     }
-    car.pivot.translateX(-0.02 * pedal);
+    car.pivot.translateX(-0.02 * pedal);*/
     renderer.render(scene, camera);
   }
   animate();
@@ -113,14 +113,21 @@ $(() => {
   // device orientation test
   // doesn't seem to work with jQuery
   window.addEventListener("deviceorientation", function(event) {
-    turn = Math.floor((event.gamma > 0 ? -1 : 1) * event.beta); // turning the device sideways
-    pedal = Math.floor(45 - Math.abs(event.gamma));             // tilting the device forwards/backwards
+    //turn = Math.floor((event.gamma > 0 ? -1 : 1) * event.beta); // turning the device sideways
+    //pedal = Math.floor(45 - Math.abs(event.gamma));             // tilting the device forwards/backwards
                                                                 // 45 degree tilt is no movement
                                                                 // TODO: allow tilt calibration to user
                                                                 // TODO: allow portrait mode
 
     // show interpreted turn, pedal results
     //$("h1").text(Math.floor(turn) + " " + Math.floor(pedal));
+    socket.emit("deviceorientation", Math.floor((event.gamma > 0 ? -1 : 1) * event.beta), Math.floor(45 - Math.abs(event.gamma)));
+  });
+  socket.on("mapUpdate", (carInfo) => {
+    car.pivot.position.set(carInfo.x, carInfo.y, carInfo.z);
+    car.pivot.x = carInfo.x;
+    car.pivot.z = carInfo.z;
+    car.pivot.rotation.y = carInfo.direction;
   });
 
   // get terrain map and implement
@@ -146,7 +153,7 @@ $(() => {
       $generatedCode.text(generatedCode);
       socket.on("codeVerified", () => {
         $("h1").text("host " + generatedCode);
-      })
+      });
     });
   });
 
