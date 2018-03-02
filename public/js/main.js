@@ -123,22 +123,20 @@ $(() => {
     $("h1").text(Math.floor(turn) + " " + Math.floor(pedal));
     socket.emit("deviceorientation", Math.floor((event.gamma > 0 ? -1 : 1) * event.beta), Math.floor(45 - Math.abs(event.gamma)));
   });
-  //setInterval(() => {
-  //  socket.emit("deviceorientation", 10, 10);
-  //}, 10);
+  setInterval(() => {
+    socket.emit("deviceorientation", 10, 10);
+  }, 10);
   socket.on("mapUpdate", (carInfo) => {
     car.pivot.position.set(carInfo.x, carInfo.y, carInfo.z);
-    car.pivot.x = carInfo.x; // TODO: remove this
-    car.pivot.z = carInfo.z;
     car.pivot.rotation.y = carInfo.direction;
   });
 
   // get terrain map and implement
   socket.emit("getMap", function(mapData) {
     var elevations = mapData[0].map(e => e.r);
-    var planeGeometry = new THREE.PlaneGeometry(500, 500, 9, 9);
+    var planeGeometry = new THREE.PlaneGeometry(99, 99, 99, 99);
     for(var i = 0; i < elevations.length; i++) {
-      planeGeometry.vertices[i].z = elevations[i] / 255 * 100;
+      planeGeometry.vertices[i].z = elevations[i] / 255 * 10;
     }
     var planeMaterial = new THREE.MeshLambertMaterial({
       color: 0xffffff,
@@ -146,7 +144,7 @@ $(() => {
     });
     var planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
     planeMesh.rotation.x = -Math.PI/2;
-    planeMesh.position.y = -30;
+    planeMesh.position.y = -10;
     scene.add(planeMesh);
   });
 

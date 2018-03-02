@@ -31,6 +31,14 @@ var pixelGetter = require("pixel-getter");
 var io = require("socket.io")(http);
 var sockets = [];
 var cars = [];
+var mapPixels;
+pixelGetter.get("./maps/map.png", function(error, pixels) {
+  if(error) {
+    console.log("Error retrieving map image data: " + error);
+    return;
+  }
+  mapPixels = pixels;
+});
 io.on("connection", function(socket) {
   console.log("a user has connected");
   sockets.push(socket);
@@ -47,13 +55,7 @@ io.on("connection", function(socket) {
 
   // return map pixel data
   socket.on("getMap", fn => {
-    pixelGetter.get("./maps/map.png", function(error, pixels) {
-      if(error) {
-        console.log("Error retrieving map image data: " + error);
-        return;
-      }
-      fn(pixels);
-    });
+    fn(mapPixels);
   });
 
   // generate and return code
@@ -119,7 +121,6 @@ io.on("connection", function(socket) {
     if(socket.host === false && (socket.socketPair && socket.socketPair.code === socket.code)) {
       socket.socketPair.car.turn = turn;
       socket.socketPair.car.pedal = pedal;
-      //console.log(turn, pedal);
     }
   });
 
@@ -149,5 +150,11 @@ setInterval(() => {
     var distance = 0.05 * car.pedal;
     car.x -= Math.cos(car.direction) * distance;
     car.z += Math.sin(car.direction) * distance;
+    var pixel = Math.floor(car.x)*99 + Math.floor(car.z);
+    if(pixel < 0 || pixel >= mapPixels[0].length) {
+      car.y = 0;
+    } else {
+      car.y = mapPixels[0][pixel].r / 255 * 100;
+    }
   }
 }, 10);
